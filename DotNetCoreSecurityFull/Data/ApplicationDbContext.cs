@@ -12,5 +12,7 @@ namespace DotNetCoreSecurityFull.Data
             : base(options)
         {
         }
+
+        private DbSet<ApplicationUser> applicationUsers { get; set; } 
     }
 }
