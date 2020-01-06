@@ -19,13 +19,18 @@ namespace DotNetCoreSecurityFull.Areas.Account.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.context = context;
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            // load user list here
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> PasswordResetByAdmin(string userName)
         {
-
             #region Find User
 
             // another way
