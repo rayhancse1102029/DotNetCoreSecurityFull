@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetCoreSecurityFull.Areas.Account.Models;
 using DotNetCoreSecurityFull.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using DotNetCoreSecurityFull.Models;
 
 namespace DotNetCoreSecurityFull.Areas.Account.Controllers
 {
+    [Area("Account")]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ApplicationDbContext context;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationDbContext context)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -24,8 +28,13 @@ namespace DotNetCoreSecurityFull.Areas.Account.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // load user list here
-            return View();
+
+            ApplicationUserViewModel model = new ApplicationUserViewModel
+            {
+               ApplicationUsers  = await context.Users.ToListAsync()
+            };
+            
+            return View(model);
         }
 
         [HttpPost]
@@ -38,17 +47,17 @@ namespace DotNetCoreSecurityFull.Areas.Account.Controllers
 
             //var userInfo = context.Users.FirstOrDefault(u => u.UserName == userName);
 
-            IdentityUser identityUser = await userManager.FindByNameAsync(userName);
+            ApplicationUser applicationUser = await userManager.FindByNameAsync(userName);
 
             #endregion
 
-           if(identityUser.PasswordHash == null)
+           if(applicationUser.PasswordHash == null)
             {
                 // password already removed
             }
             else
             {
-                await userManager.RemovePasswordAsync(identityUser);
+                await userManager.RemovePasswordAsync(applicationUser);
 
             }
             return RedirectToAction("Index");
@@ -59,11 +68,11 @@ namespace DotNetCoreSecurityFull.Areas.Account.Controllers
         public async Task<IActionResult> PasswordSetByAdmin(string userName, string newPassword)
         {
 
-            IdentityUser identityUser = await userManager.FindByNameAsync(userName);
+            ApplicationUser applicationUser = await userManager.FindByNameAsync(userName);
 
-            if (identityUser.PasswordHash == null)
+            if (applicationUser.PasswordHash == null)
             {
-                await userManager.AddPasswordAsync(identityUser, newPassword);
+                await userManager.AddPasswordAsync(applicationUser, newPassword);
             }
             else
             {
