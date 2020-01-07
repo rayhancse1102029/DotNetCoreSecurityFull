@@ -31,7 +31,10 @@
                         <td>@item.UserName</td>
                         <td>@item.Email</td>
                         <td>@item.PhoneNumber</td>
-                        <td></td>
+                        <td>
+                            <a href="Account/Account/PasswordResetByAdmin/@item.UserName" class="btn btn-primary">Reset</a>
+                            <a href="Account/Account/PasswordSetByAdmin/@item.UserName" class="btn btn-primary">Set</a>
+                        </td>
                     </tr>
                 }
                 </tbody>
